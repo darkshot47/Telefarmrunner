@@ -55,10 +55,12 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+
 
 class MainActivity : ComponentActivity() {
 
@@ -73,28 +75,53 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+
+/* ---------------- THEME ---------------- */
+
 @Composable
 fun TelefarmTheme(
     content: @Composable () -> Unit
 ) {
+
     MaterialTheme(
-        colorScheme = androidx.compose.material3.darkColorScheme(
-            background = Color.Black,
-            surface = Color(0xFF111111),
-            surfaceVariant = Color(0xFF1B1B1B),
 
-            primary = Color.White,
-            onPrimary = Color.Black,
+        colorScheme =
+            androidx.compose.material3.darkColorScheme(
 
-            onBackground = Color.White,
-            onSurface = Color.White,
-            onSurfaceVariant = Color(0xFFBDBDBD)
-        ),
+                background = Color.Black,
+
+                surface =
+                    Color(0xFF111111),
+
+                surfaceVariant =
+                    Color(0xFF1B1B1B),
+
+                primary =
+                    Color.White,
+
+                onPrimary =
+                    Color.Black,
+
+                onBackground =
+                    Color.White,
+
+                onSurface =
+                    Color.White,
+
+                onSurfaceVariant =
+                    Color(0xFFBDBDBD)
+            ),
+
         content = content
     )
 }
 
-@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
+
+/* ---------------- MAIN APP ---------------- */
+
+@OptIn(
+    androidx.compose.material3.ExperimentalMaterial3Api::class
+)
 @Composable
 fun TelefarmApp() {
 
@@ -103,23 +130,33 @@ fun TelefarmApp() {
     }
 
     Scaffold(
-        containerColor = Color.Black,
+
+        containerColor =
+            Color.Black,
 
         topBar = {
 
             TopAppBar(
 
                 title = {
+
                     Text(
+
                         text = "Telefarm",
-                        fontWeight = FontWeight.Bold
+
+                        fontWeight =
+                            FontWeight.Bold
                     )
                 },
 
                 colors =
                     TopAppBarDefaults.topAppBarColors(
-                        containerColor = Color.Black,
-                        titleContentColor = Color.White
+
+                        containerColor =
+                            Color.Black,
+
+                        titleContentColor =
+                            Color.White
                     )
             )
         }
@@ -131,36 +168,52 @@ fun TelefarmApp() {
             "home" -> {
 
                 HomeScreen(
-                    modifier = Modifier.padding(padding),
+
+                    modifier =
+                        Modifier.padding(padding),
 
                     onProjects = {
-                        screen = "projects"
+
+                        screen =
+                            "projects"
                     },
 
                     onOwner = {
-                        screen = "owner"
+
+                        screen =
+                            "owner"
                     }
                 )
             }
+
 
             "projects" -> {
 
                 ProjectsScreen(
-                    modifier = Modifier.padding(padding),
+
+                    modifier =
+                        Modifier.padding(padding),
 
                     onBack = {
-                        screen = "home"
+
+                        screen =
+                            "home"
                     }
                 )
             }
 
+
             "owner" -> {
 
                 OwnerScreen(
-                    modifier = Modifier.padding(padding),
+
+                    modifier =
+                        Modifier.padding(padding),
 
                     onBack = {
-                        screen = "home"
+
+                        screen =
+                            "home"
                     }
                 )
             }
@@ -168,11 +221,18 @@ fun TelefarmApp() {
     }
 }
 
+
+/* ---------------- HOME SCREEN ---------------- */
+
 @Composable
 fun HomeScreen(
+
     modifier: Modifier,
+
     onProjects: () -> Unit,
+
     onOwner: () -> Unit
+
 ) {
 
     val transition =
@@ -182,9 +242,11 @@ fun HomeScreen(
 
     val alpha by transition.animateFloat(
 
-        initialValue = 0.65f,
+        initialValue =
+            0.65f,
 
-        targetValue = 1f,
+        targetValue =
+            1f,
 
         animationSpec =
             infiniteRepeatable(
@@ -196,8 +258,10 @@ fun HomeScreen(
                     RepeatMode.Reverse
             ),
 
-        label = "owner_alpha"
+        label =
+            "owner_alpha"
     )
+
 
     Column(
 
@@ -211,9 +275,11 @@ fun HomeScreen(
             Arrangement.spacedBy(16.dp)
     ) {
 
+
         Text(
 
-            text = "Bot Manager",
+            text =
+                "Bot Manager",
 
             style =
                 MaterialTheme.typography.headlineMedium,
@@ -221,6 +287,7 @@ fun HomeScreen(
             fontWeight =
                 FontWeight.Bold
         )
+
 
         Text(
 
@@ -231,9 +298,13 @@ fun HomeScreen(
                 Color(0xFFBDBDBD)
         )
 
+
         Spacer(
             Modifier.height(4.dp)
         )
+
+
+        /* PROJECT CARD */
 
         Card(
 
@@ -242,6 +313,7 @@ fun HomeScreen(
 
             colors =
                 CardDefaults.cardColors(
+
                     containerColor =
                         Color(0xFF151515)
                 ),
@@ -251,21 +323,26 @@ fun HomeScreen(
         ) {
 
             Column(
+
                 modifier =
                     Modifier.padding(20.dp)
             ) {
 
+
                 Text(
 
-                    text = "Projects",
+                    text =
+                        "Projects",
 
                     fontWeight =
                         FontWeight.Bold
                 )
 
+
                 Spacer(
                     Modifier.height(6.dp)
                 )
+
 
                 Text(
 
@@ -276,9 +353,11 @@ fun HomeScreen(
                         Color(0xFFBDBDBD)
                 )
 
+
                 Spacer(
                     Modifier.height(16.dp)
                 )
+
 
                 Button(
 
@@ -290,11 +369,15 @@ fun HomeScreen(
                 ) {
 
                     Text(
-                        text = "Open Projects"
+                        text =
+                            "Open Projects"
                     )
                 }
             }
         }
+
+
+        /* OWNER CARD */
 
         Card(
 
@@ -303,11 +386,13 @@ fun HomeScreen(
                     .fillMaxWidth()
                     .alpha(alpha)
                     .clickable {
+
                         onOwner()
                     },
 
             colors =
                 CardDefaults.cardColors(
+
                     containerColor =
                         Color(0xFF151515)
                 ),
@@ -315,6 +400,7 @@ fun HomeScreen(
             shape =
                 RoundedCornerShape(22.dp)
         ) {
+
 
             Row(
 
@@ -327,11 +413,13 @@ fun HomeScreen(
                     Alignment.CenterVertically
             ) {
 
+
                 Image(
 
                     painter =
                         painterResource(
-                            id = R.drawable.profile
+                            id =
+                                R.drawable.profile
                         ),
 
                     contentDescription =
@@ -343,9 +431,11 @@ fun HomeScreen(
                             .clip(CircleShape)
                 )
 
+
                 Spacer(
                     Modifier.size(16.dp)
                 )
+
 
                 Column {
 
@@ -358,9 +448,11 @@ fun HomeScreen(
                             FontWeight.Bold
                     )
 
+
                     Spacer(
                         Modifier.height(5.dp)
                     )
+
 
                     Text(
 
@@ -371,9 +463,11 @@ fun HomeScreen(
                             Color(0xFFBDBDBD)
                     )
 
+
                     Spacer(
                         Modifier.height(4.dp)
                     )
+
 
                     Text(
 
@@ -389,19 +483,27 @@ fun HomeScreen(
     }
 }
 
+
+/* ---------------- PROJECTS SCREEN ---------------- */
+
 @Composable
 fun ProjectsScreen(
+
     modifier: Modifier,
+
     onBack: () -> Unit
+
 ) {
 
     var projects by remember {
+
         mutableStateOf(
             listOf(
                 "My Project"
             )
         )
     }
+
 
     Column(
 
@@ -412,18 +514,24 @@ fun ProjectsScreen(
                 .padding(20.dp)
     ) {
 
+
         OutlinedButton(
-            onClick = onBack
+
+            onClick =
+                onBack
         ) {
 
             Text(
-                text = "Back"
+                text =
+                    "Back"
             )
         }
+
 
         Spacer(
             Modifier.height(18.dp)
         )
+
 
         Row(
 
@@ -437,11 +545,13 @@ fun ProjectsScreen(
                 Alignment.CenterVertically
         ) {
 
+
             Column {
 
                 Text(
 
-                    text = "Projects",
+                    text =
+                        "Projects",
 
                     style =
                         MaterialTheme.typography.headlineSmall,
@@ -450,9 +560,11 @@ fun ProjectsScreen(
                         FontWeight.Bold
                 )
 
+
                 Spacer(
                     Modifier.height(4.dp)
                 )
+
 
                 Text(
 
@@ -464,7 +576,9 @@ fun ProjectsScreen(
                 )
             }
 
+
             Button(
+
                 onClick = {
 
                     if (projects.size < 5) {
@@ -477,14 +591,17 @@ fun ProjectsScreen(
             ) {
 
                 Text(
-                    text = "New Project"
+                    text =
+                        "New Project"
                 )
             }
         }
 
+
         Spacer(
             Modifier.height(20.dp)
         )
+
 
         LazyColumn(
 
@@ -492,7 +609,9 @@ fun ProjectsScreen(
                 Arrangement.spacedBy(10.dp)
         ) {
 
+
             items(projects) { project ->
+
 
                 Card(
 
@@ -501,6 +620,7 @@ fun ProjectsScreen(
 
                     colors =
                         CardDefaults.cardColors(
+
                             containerColor =
                                 Color(0xFF151515)
                         ),
@@ -508,6 +628,7 @@ fun ProjectsScreen(
                     shape =
                         RoundedCornerShape(18.dp)
                 ) {
+
 
                     Row(
 
@@ -523,19 +644,23 @@ fun ProjectsScreen(
                             Alignment.CenterVertically
                     ) {
 
+
                         Column {
 
                             Text(
 
-                                text = project,
+                                text =
+                                    project,
 
                                 fontWeight =
                                     FontWeight.SemiBold
                             )
 
+
                             Spacer(
                                 Modifier.height(4.dp)
                             )
+
 
                             Text(
 
@@ -547,8 +672,10 @@ fun ProjectsScreen(
                             )
                         }
 
+
                         Text(
-                            text = "Open"
+                            text =
+                                "Open"
                         )
                     }
                 }
@@ -557,11 +684,29 @@ fun ProjectsScreen(
     }
 }
 
+
+/* ---------------- OWNER SCREEN ---------------- */
+
 @Composable
 fun OwnerScreen(
+
     modifier: Modifier,
+
     onBack: () -> Unit
+
 ) {
+
+    /*
+     * IMPORTANT:
+     * startActivity() directly is not available inside
+     * a Composable.
+     *
+     * LocalContext gives us the current Android context.
+     */
+
+    val context =
+        LocalContext.current
+
 
     Column(
 
@@ -572,24 +717,33 @@ fun OwnerScreen(
                 .padding(20.dp)
     ) {
 
+
         OutlinedButton(
-            onClick = onBack
+
+            onClick =
+                onBack
         ) {
 
             Text(
-                text = "Back"
+                text =
+                    "Back"
             )
         }
+
 
         Spacer(
             Modifier.height(35.dp)
         )
 
+
+        /* PROFILE IMAGE */
+
         Image(
 
             painter =
                 painterResource(
-                    id = R.drawable.profile
+                    id =
+                        R.drawable.profile
                 ),
 
             contentDescription =
@@ -601,9 +755,13 @@ fun OwnerScreen(
                     .clip(CircleShape)
         )
 
+
         Spacer(
             Modifier.height(20.dp)
         )
+
+
+        /* OWNER NAME */
 
         Text(
 
@@ -617,9 +775,11 @@ fun OwnerScreen(
                 FontWeight.Bold
         )
 
+
         Spacer(
             Modifier.height(6.dp)
         )
+
 
         Text(
 
@@ -630,9 +790,13 @@ fun OwnerScreen(
                 Color(0xFFBDBDBD)
         )
 
+
         Spacer(
             Modifier.height(30.dp)
         )
+
+
+        /* TELEGRAM BUTTON */
 
         Button(
 
@@ -640,11 +804,15 @@ fun OwnerScreen(
 
                 val intent =
                     Intent(
+
                         Intent.ACTION_VIEW,
-                        Uri.parse("https://t.me/SKY_XYR")
+
+                        Uri.parse(
+                            "https://t.me/SKY_XYR"
+                        )
                     )
 
-                startActivity(intent)
+                context.startActivity(intent)
             },
 
             modifier =
@@ -652,7 +820,8 @@ fun OwnerScreen(
         ) {
 
             Text(
-                text = "Contact Owner"
+                text =
+                    "Contact Owner"
             )
         }
     }
