@@ -7,6 +7,10 @@ import android.os.Bundle
 
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.OutlinedTextField
+
+import org.json.JSONArray
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -1082,6 +1086,72 @@ fun openTelegram(
     }
 }
 /* =========================================================
+   PROJECT STORAGE
+   ========================================================= */
+
+private const val PROJECT_PREFS = "telefarm_projects"
+private const val PROJECT_LIST_KEY = "project_list"
+
+
+fun loadProjects(
+    context: Context
+): List<String> {
+
+    val prefs =
+        context.getSharedPreferences(
+            PROJECT_PREFS,
+            Context.MODE_PRIVATE
+        )
+
+    val json =
+        prefs.getString(
+            PROJECT_LIST_KEY,
+            null
+        ) ?: return emptyList()
+
+    return try {
+
+        val array =
+            JSONArray(json)
+
+        List(array.length()) { index ->
+            array.getString(index)
+        }
+
+    } catch (e: Exception) {
+
+        emptyList()
+    }
+}
+
+
+fun saveProjects(
+    context: Context,
+    projects: List<String>
+) {
+
+    val array =
+        JSONArray()
+
+    projects.forEach { project ->
+        array.put(project)
+    }
+
+    context
+        .getSharedPreferences(
+            PROJECT_PREFS,
+            Context.MODE_PRIVATE
+        )
+        .edit()
+        .putString(
+            PROJECT_LIST_KEY,
+            array.toString()
+        )
+        .apply()
+}
+
+
+/* =========================================================
    PROJECTS SCREEN
    ========================================================= */
 
@@ -1091,13 +1161,33 @@ fun ProjectsScreen(
     onBack: () -> Unit
 ) {
 
+    val context =
+        androidx.compose.ui.platform.LocalContext.current
+
+
     var projects by remember {
 
         mutableStateOf(
-            listOf(
-                "My Project"
-            )
+            loadProjects(context)
         )
+    }
+
+
+    var showCreateDialog by remember {
+
+        mutableStateOf(false)
+    }
+
+
+    var newProjectName by remember {
+
+        mutableStateOf("")
+    }
+
+
+    var deleteProject by remember {
+
+        mutableStateOf<String?>(null)
     }
 
 
@@ -1111,7 +1201,7 @@ fun ProjectsScreen(
     ) {
 
 
-        /* BACK BUTTON */
+        /* BACK */
 
         SlideInItem(0) {
 
@@ -1134,7 +1224,7 @@ fun ProjectsScreen(
         )
 
 
-        /* PROJECT HEADER */
+        /* HEADER */
 
         SlideInItem(100) {
 
@@ -1150,7 +1240,6 @@ fun ProjectsScreen(
                     Alignment.CenterVertically
             ) {
 
-
                 Column {
 
                     Text(
@@ -1159,7 +1248,9 @@ fun ProjectsScreen(
                             "Projects",
 
                         style =
-                            MaterialTheme.typography.headlineSmall,
+                            MaterialTheme
+                                .typography
+                                .headlineSmall,
 
                         fontWeight =
                             FontWeight.Bold
@@ -1174,7 +1265,7 @@ fun ProjectsScreen(
                     Text(
 
                         text =
-                            "Maximum 5 projects",
+                            "${projects.size} / 5 projects",
 
                         color =
                             Color(0xFFBDBDBD)
@@ -1190,11 +1281,15 @@ fun ProjectsScreen(
                             projects.size < 5
                         ) {
 
-                            projects =
-                                projects +
-                                "Project ${projects.size + 1}"
+                            newProjectName = ""
+
+                            showCreateDialog =
+                                true
                         }
-                    }
+                    },
+
+                    enabled =
+                        projects.size < 5
                 ) {
 
                     Text(
@@ -1213,108 +1308,343 @@ fun ProjectsScreen(
 
         /* PROJECT LIST */
 
-        LazyColumn(
+        if (projects.isEmpty()) {
 
-            modifier =
-                Modifier.fillMaxSize(),
+            SlideInItem(200) {
 
-            verticalArrangement =
-                Arrangement.spacedBy(10.dp)
-        ) {
+                Box(
 
+                    modifier =
+                        Modifier.fillMaxSize(),
 
-            items(
-
-                items =
-                    projects,
-
-                key = {
-                    project ->
-                    project
-                }
-
-            ) { project ->
-
-
-                SlideInItem(
-
-                    delayMillis =
-                        150
+                    contentAlignment =
+                        Alignment.Center
                 ) {
 
-                    Card(
+                    Text(
 
-                        modifier =
-                            Modifier.fillMaxWidth(),
+                        text =
+                            "No projects yet",
 
-                        colors =
-                            CardDefaults.cardColors(
+                        color =
+                            Color(0xFFBDBDBD)
+                    )
+                }
+            }
 
-                                containerColor =
-                                    Color(0xFF151515)
-                            ),
+        } else {
 
-                        shape =
-                            RoundedCornerShape(18.dp)
+            LazyColumn(
+
+                modifier =
+                    Modifier.fillMaxSize(),
+
+                verticalArrangement =
+                    Arrangement.spacedBy(10.dp)
+            ) {
+
+                items(
+
+                    items =
+                        projects,
+
+                    key = {
+                        project ->
+                        project
+                    }
+
+                ) { project ->
+
+
+                    SlideInItem(
+
+                        delayMillis =
+                            150
                     ) {
 
-
-                        Row(
+                        Card(
 
                             modifier =
+                                Modifier.fillMaxWidth(),
 
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(18.dp),
+                            colors =
+                                CardDefaults
+                                    .cardColors(
 
-                            horizontalArrangement =
-                                Arrangement.SpaceBetween,
+                                        containerColor =
+                                            Color(0xFF151515)
+                                    ),
 
-                            verticalAlignment =
-                                Alignment.CenterVertically
+                            shape =
+                                RoundedCornerShape(
+                                    18.dp
+                                )
                         ) {
 
+                            Row(
 
-                            Column {
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(18.dp),
 
-                                Text(
+                                horizontalArrangement =
+                                    Arrangement.SpaceBetween,
 
-                                    text =
-                                        project,
-
-                                    fontWeight =
-                                        FontWeight.SemiBold
-                                )
-
-
-                                Spacer(
-                                    Modifier.height(4.dp)
-                                )
+                                verticalAlignment =
+                                    Alignment.CenterVertically
+                            ) {
 
 
-                                Text(
+                                Column(
 
-                                    text =
-                                        "0 / 5 bots",
+                                    modifier =
+                                        Modifier.weight(1f)
+                                ) {
 
-                                    color =
-                                        Color(0xFFBDBDBD)
-                                )
+                                    Text(
+
+                                        text =
+                                            project,
+
+                                        fontWeight =
+                                            FontWeight.SemiBold
+                                    )
+
+
+                                    Spacer(
+                                        Modifier.height(4.dp)
+                                    )
+
+
+                                    Text(
+
+                                        text =
+                                            "0 / 5 bots",
+
+                                        color =
+                                            Color(0xFFBDBDBD)
+                                    )
+                                }
+
+
+                                OutlinedButton(
+
+                                    onClick = {
+
+                                        deleteProject =
+                                            project
+                                    }
+                                ) {
+
+                                    Text(
+                                        text =
+                                            "Delete"
+                                    )
+                                }
                             }
-
-
-                            Text(
-
-                                text =
-                                    "Open",
-
-                                fontWeight =
-                                    FontWeight.SemiBold
-                            )
                         }
                     }
                 }
             }
         }
+    }
+
+
+    /* =====================================================
+       CREATE PROJECT DIALOG
+       ===================================================== */
+
+    if (showCreateDialog) {
+
+        AlertDialog(
+
+            onDismissRequest = {
+
+                showCreateDialog =
+                    false
+            },
+
+            title = {
+
+                Text(
+                    text =
+                        "New Project"
+                )
+            },
+
+            text = {
+
+                OutlinedTextField(
+
+                    value =
+                        newProjectName,
+
+                    onValueChange = {
+
+                        newProjectName =
+                            it
+                    },
+
+                    modifier =
+                        Modifier.fillMaxWidth(),
+
+                    singleLine = true,
+
+                    label = {
+
+                        Text(
+                            text =
+                                "Project name"
+                        )
+                    }
+                )
+            },
+
+            confirmButton = {
+
+                Button(
+
+                    onClick = {
+
+                        val name =
+                            newProjectName
+                                .trim()
+
+
+                        if (
+                            name.isNotEmpty() &&
+                            projects.size < 5 &&
+                            !projects.contains(name)
+                        ) {
+
+                            projects =
+                                projects + name
+
+
+                            saveProjects(
+                                context,
+                                projects
+                            )
+
+
+                            showCreateDialog =
+                                false
+                        }
+                    },
+
+                    enabled =
+                        newProjectName
+                            .trim()
+                            .isNotEmpty()
+                ) {
+
+                    Text(
+                        text =
+                            "Create"
+                    )
+                }
+            },
+
+            dismissButton = {
+
+                OutlinedButton(
+
+                    onClick = {
+
+                        showCreateDialog =
+                            false
+                    }
+                ) {
+
+                    Text(
+                        text =
+                            "Cancel"
+                    )
+                }
+            }
+        )
+    }
+
+
+    /* =====================================================
+       DELETE DIALOG
+       ===================================================== */
+
+    deleteProject?.let { project ->
+
+        AlertDialog(
+
+            onDismissRequest = {
+
+                deleteProject =
+                    null
+            },
+
+            title = {
+
+                Text(
+                    text =
+                        "Delete Project?"
+                )
+            },
+
+            text = {
+
+                Text(
+
+                    text =
+                        "Delete \"$project\"?"
+                )
+            },
+
+            confirmButton = {
+
+                Button(
+
+                    onClick = {
+
+                        projects =
+                            projects.filter {
+                                it != project
+                            }
+
+
+                        saveProjects(
+                            context,
+                            projects
+                        )
+
+
+                        deleteProject =
+                            null
+                    }
+                ) {
+
+                    Text(
+                        text =
+                            "Delete"
+                    )
+                }
+            },
+
+            dismissButton = {
+
+                OutlinedButton(
+
+                    onClick = {
+
+                        deleteProject =
+                            null
+                    }
+                ) {
+
+                    Text(
+                        text =
+                            "Cancel"
+                    )
+                }
+            }
+        )
     }
 }
