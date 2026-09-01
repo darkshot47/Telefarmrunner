@@ -491,7 +491,7 @@ fun HomeScreen(
                         ) {
 
                             TelegramLogo(
-                                size = 25.dp
+                                logoSize = 25.dp
                             )
 
 
@@ -536,14 +536,14 @@ fun HomeScreen(
 
 @Composable
 fun TelegramLogo(
-    size: androidx.compose.ui.unit.Dp
+    logoSize: androidx.compose.ui.unit.Dp
 ) {
 
     Box(
 
         modifier =
             Modifier
-                .size(size)
+                .size(logosize)
                 .clip(CircleShape)
                 .background(
                     Color(0xFF229ED9)
@@ -557,7 +557,7 @@ fun TelegramLogo(
 
             modifier =
                 Modifier
-                    .size(size * 0.58f)
+                    .size(logosize * 0.58f)
         ) {
 
             val path =
@@ -791,7 +791,7 @@ fun OwnerScreen(
                     ) {
 
                         TelegramLogo(
-                            size = 62.dp
+                            logosize = 62.dp
                         )
 
 
@@ -918,7 +918,7 @@ fun OwnerScreen(
                 ) {
 
                     TelegramLogo(
-                        size = 48.dp
+                        logosize = 48.dp
                     )
 
 
