@@ -133,6 +133,9 @@ fun TelefarmApp() {
     var screen by remember {
         mutableStateOf("home")
     }
+    var selectedProject by remember {
+    mutableStateOf("")
+    }
 
     Scaffold(
 
@@ -183,17 +186,42 @@ fun TelefarmApp() {
 
             "projects" -> {
 
-                ProjectsScreen(
+    ProjectsScreen(
 
-                    modifier =
-                        Modifier.padding(padding),
+        modifier =
+            Modifier.padding(padding),
 
-                    onBack = {
-                        screen = "home"
-                    }
-                )
-            }
+        onBack = {
+            screen = "home"
+        },
 
+        onOpenProject = { projectName ->
+
+            selectedProject =
+                projectName
+
+            screen =
+                "project_details"
+        }
+    )
+}
+
+    "project_details" -> {
+
+    ProjectDetailsScreen(
+
+        modifier =
+            Modifier.padding(padding),
+
+        projectName =
+            selectedProject,
+
+        onBack = {
+            screen = "projects"
+        }
+    )
+}
+    
             "owner" -> {
 
                 OwnerScreen(
@@ -1158,7 +1186,8 @@ fun saveProjects(
 @Composable
 fun ProjectsScreen(
     modifier: Modifier,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onOpenProject: (String) -> Unit
 ) {
 
     val context =
@@ -1363,9 +1392,14 @@ fun ProjectsScreen(
                     ) {
 
                         Card(
-
                             modifier =
-                                Modifier.fillMaxWidth(),
+                                Modifier
+                                   .fillMaxWidth()
+                                   .clickable {
+                                       onOpenProject(
+                                           project
+                                       )
+                                   },
 
                             colors =
                                 CardDefaults
@@ -1450,7 +1484,225 @@ fun ProjectsScreen(
         }
     }
 
+/* =========================================================
+   PROJECT DETAILS SCREEN
+   ========================================================= */
 
+@Composable
+fun ProjectDetailsScreen(
+    modifier: Modifier,
+    projectName: String,
+    onBack: () -> Unit
+) {
+
+    Column(
+
+        modifier =
+            modifier
+                .fillMaxSize()
+                .background(Color.Black)
+                .padding(20.dp)
+    ) {
+
+        SlideInItem(0) {
+
+            OutlinedButton(
+                onClick =
+                    onBack
+            ) {
+
+                Text(
+                    text =
+                        "Back"
+                )
+            }
+        }
+
+
+        Spacer(
+            Modifier.height(20.dp)
+        )
+
+
+        SlideInItem(100) {
+
+            Text(
+
+                text =
+                    projectName,
+
+                style =
+                    MaterialTheme
+                        .typography
+                        .headlineMedium,
+
+                fontWeight =
+                    FontWeight.Bold
+            )
+        }
+
+
+        Spacer(
+            Modifier.height(6.dp)
+        )
+
+
+        SlideInItem(150) {
+
+            Text(
+
+                text =
+                    "Project",
+
+                color =
+                    Color(0xFFBDBDBD)
+            )
+        }
+
+
+        Spacer(
+            Modifier.height(25.dp)
+        )
+
+
+        SlideInItem(200) {
+
+            Card(
+
+                modifier =
+                    Modifier.fillMaxWidth(),
+
+                colors =
+                    CardDefaults.cardColors(
+
+                        containerColor =
+                            Color(0xFF151515)
+                    ),
+
+                shape =
+                    RoundedCornerShape(20.dp)
+            ) {
+
+                Column(
+
+                    modifier =
+                        Modifier.padding(20.dp)
+                ) {
+
+                    Text(
+
+                        text =
+                            "Bots",
+
+                        style =
+                            MaterialTheme
+                                .typography
+                                .titleLarge,
+
+                        fontWeight =
+                            FontWeight.Bold
+                    )
+
+
+                    Spacer(
+                        Modifier.height(6.dp)
+                    )
+
+
+                    Text(
+
+                        text =
+                            "0 / 5 bots",
+
+                        color =
+                            Color(0xFFBDBDBD)
+                    )
+
+
+                    Spacer(
+                        Modifier.height(18.dp)
+                    )
+
+
+                    Button(
+
+                        onClick = {
+
+                            // Bot system
+                            // next step me add hoga
+                        },
+
+                        modifier =
+                            Modifier.fillMaxWidth()
+                    ) {
+
+                        Text(
+                            text =
+                                "Add Bot"
+                        )
+                    }
+                }
+            }
+        }
+
+
+        Spacer(
+            Modifier.height(15.dp)
+        )
+
+
+        SlideInItem(300) {
+
+            Card(
+
+                modifier =
+                    Modifier.fillMaxWidth(),
+
+                colors =
+                    CardDefaults.cardColors(
+
+                        containerColor =
+                            Color(0xFF151515)
+                    ),
+
+                shape =
+                    RoundedCornerShape(20.dp)
+            ) {
+
+                Column(
+
+                    modifier =
+                        Modifier.padding(20.dp)
+                ) {
+
+                    Text(
+
+                        text =
+                            "Project Storage",
+
+                        fontWeight =
+                            FontWeight.Bold
+                    )
+
+
+                    Spacer(
+                        Modifier.height(8.dp)
+                    )
+
+
+                    Text(
+
+                        text =
+                            "Files and bot data will be available here.",
+
+                        color =
+                            Color(0xFFBDBDBD)
+                    )
+                }
+            }
+        }
+    }
+}
     /* =====================================================
        CREATE PROJECT DIALOG
        ===================================================== */
