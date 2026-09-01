@@ -601,37 +601,37 @@ fun TelegramLogo(
             )
 
 
-            val inner =
+                        val inner =
                 Path().apply {
 
                     moveTo(
-                        this.size.width * 0.47f,
-                        this.size.height * 0.60f
+                        x = this.size.width * 0.47f,
+                        y = this.size.height * 0.60f
                     )
 
                     lineTo(
-                        this.size.width * 0.85f,
-                        this.size.height * 0.16f
+                        x = this.size.width * 0.85f,
+                        y = this.size.height * 0.16f
                     )
 
                     lineTo(
-                        this.size.width * 0.53f,
-                        this.size.height * 0.48f
+                        x = this.size.width * 0.53f,
+                        y = this.size.height * 0.48f
                     )
 
                     close()
                 }
 
-
-                            drawPath(
+            drawPath(
                 path = inner,
-                color =
-                    Color(0xFF229ED9)
+                color = Color(0xFF229ED9)
             )
         }
     }
 }
-    /* =========================================================
+
+
+/* =========================================================
    OWNER SCREEN
    ========================================================= */
 
