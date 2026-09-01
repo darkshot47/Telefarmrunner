@@ -1901,3 +1901,42 @@ fun ProjectDetailsScreen(
         )
     }
 }
+
+@Composable
+fun ProjectDetailsScreen(
+    modifier: Modifier,
+    projectName: String,
+    onBack: () -> Unit
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(Color.Black)
+            .padding(20.dp)
+    ) {
+        OutlinedButton(
+            onClick = onBack
+        ) {
+            Text("Back")
+        }
+
+        Spacer(
+            Modifier.height(25.dp)
+        )
+
+        Text(
+            text = projectName,
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold
+        )
+
+        Spacer(
+            Modifier.height(16.dp)
+        )
+
+        Text(
+            text = "Project details",
+            color = Color(0xFFBDBDBD)
+        )
+    }
+}
