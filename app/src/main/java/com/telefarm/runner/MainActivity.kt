@@ -1,5 +1,6 @@
 package com.telefarm.runner
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -7,17 +8,17 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -26,9 +27,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.weight
 
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -44,6 +43,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,15 +51,17 @@ import androidx.compose.runtime.setValue
 
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 
 import androidx.compose.ui.text.font.FontWeight
+
 import androidx.compose.ui.unit.dp
+
+import kotlinx.coroutines.delay
 
 
 class MainActivity : ComponentActivity() {
@@ -76,7 +78,9 @@ class MainActivity : ComponentActivity() {
 }
 
 
-/* ---------------- THEME ---------------- */
+/* =========================================================
+   THEME
+   ========================================================= */
 
 @Composable
 fun TelefarmTheme(
@@ -90,26 +94,19 @@ fun TelefarmTheme(
 
                 background = Color.Black,
 
-                surface =
-                    Color(0xFF111111),
+                surface = Color(0xFF111111),
 
-                surfaceVariant =
-                    Color(0xFF1B1B1B),
+                surfaceVariant = Color(0xFF1A1A1A),
 
-                primary =
-                    Color.White,
+                primary = Color.White,
 
-                onPrimary =
-                    Color.Black,
+                onPrimary = Color.Black,
 
-                onBackground =
-                    Color.White,
+                onBackground = Color.White,
 
-                onSurface =
-                    Color.White,
+                onSurface = Color.White,
 
-                onSurfaceVariant =
-                    Color(0xFFBDBDBD)
+                onSurfaceVariant = Color(0xFFBDBDBD)
             ),
 
         content = content
@@ -117,7 +114,9 @@ fun TelefarmTheme(
 }
 
 
-/* ---------------- MAIN APP ---------------- */
+/* =========================================================
+   MAIN APP
+   ========================================================= */
 
 @OptIn(
     androidx.compose.material3.ExperimentalMaterial3Api::class
@@ -131,8 +130,7 @@ fun TelefarmApp() {
 
     Scaffold(
 
-        containerColor =
-            Color.Black,
+        containerColor = Color.Black,
 
         topBar = {
 
@@ -144,19 +142,16 @@ fun TelefarmApp() {
 
                         text = "Telefarm",
 
-                        fontWeight =
-                            FontWeight.Bold
+                        fontWeight = FontWeight.Bold
                     )
                 },
 
                 colors =
                     TopAppBarDefaults.topAppBarColors(
 
-                        containerColor =
-                            Color.Black,
+                        containerColor = Color.Black,
 
-                        titleContentColor =
-                            Color.White
+                        titleContentColor = Color.White
                     )
             )
         }
@@ -174,18 +169,15 @@ fun TelefarmApp() {
 
                     onProjects = {
 
-                        screen =
-                            "projects"
+                        screen = "projects"
                     },
 
                     onOwner = {
 
-                        screen =
-                            "owner"
+                        screen = "owner"
                     }
                 )
             }
-
 
             "projects" -> {
 
@@ -196,12 +188,10 @@ fun TelefarmApp() {
 
                     onBack = {
 
-                        screen =
-                            "home"
+                        screen = "home"
                     }
                 )
             }
-
 
             "owner" -> {
 
@@ -212,8 +202,7 @@ fun TelefarmApp() {
 
                     onBack = {
 
-                        screen =
-                            "home"
+                        screen = "home"
                     }
                 )
             }
@@ -222,7 +211,52 @@ fun TelefarmApp() {
 }
 
 
-/* ---------------- HOME SCREEN ---------------- */
+/* =========================================================
+   ANIMATION HELPER
+   ========================================================= */
+
+@Composable
+fun SlideInItem(
+    delayMillis: Int = 0,
+    content: @Composable () -> Unit
+) {
+
+    var visible by remember {
+        mutableStateOf(false)
+    }
+
+    LaunchedEffect(Unit) {
+
+        delay(
+            delayMillis.toLong()
+        )
+
+        visible = true
+    }
+
+    AnimatedVisibility(
+
+        visible = visible,
+
+        enter =
+            slideInVertically(
+
+                initialOffsetY = {
+                    it / 3
+                }
+            ) +
+
+            fadeIn()
+    ) {
+
+        content()
+    }
+}
+
+
+/* =========================================================
+   HOME SCREEN
+   ========================================================= */
 
 @Composable
 fun HomeScreen(
@@ -234,34 +268,6 @@ fun HomeScreen(
     onOwner: () -> Unit
 
 ) {
-
-    val transition =
-        rememberInfiniteTransition(
-            label = "owner_animation"
-        )
-
-    val alpha by transition.animateFloat(
-
-        initialValue =
-            0.65f,
-
-        targetValue =
-            1f,
-
-        animationSpec =
-            infiniteRepeatable(
-
-                animation =
-                    tween(900),
-
-                repeatMode =
-                    RepeatMode.Reverse
-            ),
-
-        label =
-            "owner_alpha"
-    )
-
 
     Column(
 
@@ -276,27 +282,32 @@ fun HomeScreen(
     ) {
 
 
-        Text(
+        SlideInItem(0) {
 
-            text =
-                "Bot Manager",
+            Text(
 
-            style =
-                MaterialTheme.typography.headlineMedium,
+                text = "Bot Manager",
 
-            fontWeight =
-                FontWeight.Bold
-        )
+                style =
+                    MaterialTheme.typography.headlineMedium,
+
+                fontWeight =
+                    FontWeight.Bold
+            )
+        }
 
 
-        Text(
+        SlideInItem(100) {
 
-            text =
-                "Run and manage your local projects.",
+            Text(
 
-            color =
-                Color(0xFFBDBDBD)
-        )
+                text =
+                    "Run and manage your local projects.",
+
+                color =
+                    Color(0xFFBDBDBD)
+            )
+        }
 
 
         Spacer(
@@ -306,72 +317,74 @@ fun HomeScreen(
 
         /* PROJECT CARD */
 
-        Card(
+        SlideInItem(200) {
 
-            modifier =
-                Modifier.fillMaxWidth(),
-
-            colors =
-                CardDefaults.cardColors(
-
-                    containerColor =
-                        Color(0xFF151515)
-                ),
-
-            shape =
-                RoundedCornerShape(22.dp)
-        ) {
-
-            Column(
+            Card(
 
                 modifier =
-                    Modifier.padding(20.dp)
+                    Modifier.fillMaxWidth(),
+
+                colors =
+                    CardDefaults.cardColors(
+
+                        containerColor =
+                            Color(0xFF151515)
+                    ),
+
+                shape =
+                    RoundedCornerShape(22.dp)
             ) {
 
-
-                Text(
-
-                    text =
-                        "Projects",
-
-                    fontWeight =
-                        FontWeight.Bold
-                )
-
-
-                Spacer(
-                    Modifier.height(6.dp)
-                )
-
-
-                Text(
-
-                    text =
-                        "Create projects and manage up to 5 bots in each project.",
-
-                    color =
-                        Color(0xFFBDBDBD)
-                )
-
-
-                Spacer(
-                    Modifier.height(16.dp)
-                )
-
-
-                Button(
-
-                    onClick =
-                        onProjects,
+                Column(
 
                     modifier =
-                        Modifier.fillMaxWidth()
+                        Modifier.padding(20.dp)
                 ) {
 
                     Text(
+
                         text =
-                            "Open Projects"
+                            "Projects",
+
+                        fontWeight =
+                            FontWeight.Bold
                     )
+
+
+                    Spacer(
+                        Modifier.height(6.dp)
+                    )
+
+
+                    Text(
+
+                        text =
+                            "Create projects and manage up to 5 bots in each project.",
+
+                        color =
+                            Color(0xFFBDBDBD)
+                    )
+
+
+                    Spacer(
+                        Modifier.height(16.dp)
+                    )
+
+
+                    Button(
+
+                        onClick =
+                            onProjects,
+
+                        modifier =
+                            Modifier.fillMaxWidth()
+                    ) {
+
+                        Text(
+                            text =
+                                "Open Projects"
+                        )
+                    }
                 }
             }
         }
@@ -379,40 +392,310 @@ fun HomeScreen(
 
         /* OWNER CARD */
 
-        Card(
+        SlideInItem(350) {
+
+            Card(
+
+                modifier =
+
+                    Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            onOwner()
+                        },
+
+                colors =
+
+                    CardDefaults.cardColors(
+
+                        containerColor =
+                            Color(0xFF151515)
+                    ),
+
+                shape =
+                    RoundedCornerShape(22.dp)
+            ) {
+
+                Row(
+
+                    modifier =
+
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(18.dp),
+
+                    verticalAlignment =
+                        Alignment.CenterVertically
+                ) {
+
+
+                    Image(
+
+                        painter =
+                            painterResource(
+                                id =
+                                    R.drawable.profile
+                            ),
+
+                        contentDescription =
+                            "Owner profile",
+
+                        modifier =
+
+                            Modifier
+                                .size(70.dp)
+                                .clip(CircleShape)
+                    )
+
+
+                    Spacer(
+                        Modifier.size(16.dp)
+                    )
+
+
+                    Column(
+                        modifier =
+                            Modifier.weight(1f)
+                    ) {
+
+                        Text(
+
+                            text =
+                                "𝙓𝙔𝙍 ( 𝘽𝙊𝙏 𝘿𝙀𝙑 )",
+
+                            fontWeight =
+                                FontWeight.Bold
+                        )
+
+
+                        Spacer(
+                            Modifier.height(5.dp)
+                        )
+
+
+                        Text(
+
+                            text =
+                                "Telefarm Owner",
+
+                            color =
+                                Color(0xFFBDBDBD)
+                        )
+
+
+                        Spacer(
+                            Modifier.height(7.dp)
+                        )
+
+
+                        Row(
+
+                            verticalAlignment =
+                                Alignment.CenterVertically
+                        ) {
+
+                            TelegramLogo(
+                                size = 25.dp
+                            )
+
+
+                            Spacer(
+                                Modifier.size(8.dp)
+                            )
+
+
+                            Text(
+
+                                text =
+                                    "Telegram",
+
+                                color =
+                                    Color(0xFF42A5F5)
+                            )
+                        }
+                    }
+
+
+                    Text(
+
+                        text =
+                            ">",
+
+                        color =
+                            Color.White,
+
+                        fontWeight =
+                            FontWeight.Bold
+                    )
+                }
+            }
+        }
+    }
+}
+
+
+/* =========================================================
+   TELEGRAM LOGO
+   ========================================================= */
+
+@Composable
+fun TelegramLogo(
+    size: androidx.compose.ui.unit.Dp
+) {
+
+    Box(
+
+        modifier =
+            Modifier
+                .size(size)
+                .clip(CircleShape)
+                .background(
+                    Color(0xFF229ED9)
+                ),
+
+        contentAlignment =
+            Alignment.Center
+    ) {
+
+        Canvas(
 
             modifier =
                 Modifier
-                    .fillMaxWidth()
-                    .alpha(alpha)
-                    .clickable {
-
-                        onOwner()
-                    },
-
-            colors =
-                CardDefaults.cardColors(
-
-                    containerColor =
-                        Color(0xFF151515)
-                ),
-
-            shape =
-                RoundedCornerShape(22.dp)
+                    .size(size * 0.58f)
         ) {
 
+            val path =
+                Path().apply {
 
-            Row(
+                    moveTo(
+                        size.width * 0.05f,
+                        size.height * 0.45f
+                    )
 
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(18.dp),
+                    lineTo(
+                        size.width * 0.90f,
+                        size.height * 0.08f
+                    )
 
-                verticalAlignment =
-                    Alignment.CenterVertically
+                    lineTo(
+                        size.width * 0.70f,
+                        size.height * 0.88f
+                    )
+
+                    lineTo(
+                        size.width * 0.47f,
+                        size.height * 0.60f
+                    )
+
+                    lineTo(
+                        size.width * 0.05f,
+                        size.height * 0.45f
+                    )
+
+                    close()
+                }
+
+
+            drawPath(
+
+                path = path,
+
+                color = Color.White
+            )
+
+
+            val inner =
+                Path().apply {
+
+                    moveTo(
+                        size.width * 0.47f,
+                        size.height * 0.60f
+                    )
+
+                    lineTo(
+                        size.width * 0.85f,
+                        size.height * 0.16f
+                    )
+
+                    lineTo(
+                        size.width * 0.53f,
+                        size.height * 0.48f
+                    )
+
+                    close()
+                }
+
+
+            drawPath(
+
+                path = inner,
+
+                color =
+                    Color(0xFF229ED9)
+            )
+        }
+    }
+}
+/* =========================================================
+   OWNER SCREEN
+   ========================================================= */
+
+@Composable
+fun OwnerScreen(
+
+    modifier: Modifier,
+
+    onBack: () -> Unit
+
+) {
+
+    val context =
+        androidx.compose.ui.platform.LocalContext.current
+
+
+    Column(
+
+        modifier =
+            modifier
+                .fillMaxSize()
+                .background(Color.Black)
+                .padding(20.dp)
+    ) {
+
+
+        SlideInItem(0) {
+
+            OutlinedButton(
+
+                onClick =
+                    onBack
             ) {
 
+                Text(
+                    text =
+                        "Back"
+                )
+            }
+        }
+
+
+        Spacer(
+            Modifier.height(25.dp)
+        )
+
+
+        /* PROFILE */
+
+        SlideInItem(100) {
+
+            Box(
+
+                modifier =
+                    Modifier.fillMaxWidth(),
+
+                contentAlignment =
+                    Alignment.Center
+            ) {
 
                 Image(
 
@@ -427,55 +710,302 @@ fun HomeScreen(
 
                     modifier =
                         Modifier
-                            .size(70.dp)
+                            .size(125.dp)
                             .clip(CircleShape)
                 )
+            }
+        }
 
 
-                Spacer(
-                    Modifier.size(16.dp)
+        Spacer(
+            Modifier.height(18.dp)
+        )
+
+
+        /* OWNER NAME */
+
+        SlideInItem(200) {
+
+            Box(
+
+                modifier =
+                    Modifier.fillMaxWidth(),
+
+                contentAlignment =
+                    Alignment.Center
+            ) {
+
+                Text(
+
+                    text =
+                        "𝙓𝙔𝙍 ( 𝘽𝙊𝙏 𝘿𝙀𝙑 )",
+
+                    style =
+                        MaterialTheme.typography.headlineSmall,
+
+                    fontWeight =
+                        FontWeight.Bold
                 )
+            }
+        }
 
 
-                Column {
+        Spacer(
+            Modifier.height(5.dp)
+        )
+
+
+        SlideInItem(250) {
+
+            Box(
+
+                modifier =
+                    Modifier.fillMaxWidth(),
+
+                contentAlignment =
+                    Alignment.Center
+            ) {
+
+                Text(
+
+                    text =
+                        "Telefarm Owner",
+
+                    color =
+                        Color(0xFF42A5F5)
+                )
+            }
+        }
+
+
+        Spacer(
+            Modifier.height(25.dp)
+        )
+
+
+        /* TELEGRAM CARD */
+
+        SlideInItem(350) {
+
+            Card(
+
+                modifier =
+                    Modifier.fillMaxWidth(),
+
+                colors =
+                    CardDefaults.cardColors(
+
+                        containerColor =
+                            Color(0xFF151515)
+                    ),
+
+                shape =
+                    RoundedCornerShape(22.dp)
+            ) {
+
+                Column(
+
+                    modifier =
+                        Modifier.padding(18.dp)
+                ) {
+
+
+                    Row(
+
+                        verticalAlignment =
+                            Alignment.CenterVertically
+                    ) {
+
+
+                        TelegramLogo(
+                            size = 62.dp
+                        )
+
+
+                        Spacer(
+                            Modifier.size(15.dp)
+                        )
+
+
+                        Column(
+
+                            modifier =
+                                Modifier.weight(1f)
+                        ) {
+
+                            Text(
+
+                                text =
+                                    "Connect on Telegram",
+
+                                fontWeight =
+                                    FontWeight.Bold
+                            )
+
+
+                            Spacer(
+                                Modifier.height(5.dp)
+                            )
+
+
+                            Text(
+
+                                text =
+                                    "Contact the Telefarm owner",
+
+                                color =
+                                    Color(0xFFBDBDBD)
+                            )
+                        }
+
+
+                        Button(
+
+                            onClick = {
+
+                                openTelegram(
+                                    context
+                                )
+                            }
+                        ) {
+
+                            Text(
+                                text =
+                                    "Open"
+                            )
+                        }
+                    }
+
+
+                    Spacer(
+                        Modifier.height(20.dp)
+                    )
+
+
+                    OwnerInfoRow(
+
+                        title =
+                            "Developer",
+
+                        value =
+                            "Telefarm Bot Developer"
+                    )
+
+
+                    Spacer(
+                        Modifier.height(16.dp)
+                    )
+
+
+                    OwnerInfoRow(
+
+                        title =
+                            "Specialization",
+
+                        value =
+                            "Bots • Automation • Tools"
+                    )
+                }
+            }
+        }
+
+
+        Spacer(
+            Modifier.height(15.dp)
+        )
+
+
+        /* TELEGRAM PROFILE */
+
+        SlideInItem(450) {
+
+            Card(
+
+                modifier =
+
+                    Modifier
+                        .fillMaxWidth()
+                        .clickable {
+
+                            openTelegram(
+                                context
+                            )
+                        },
+
+                colors =
+
+                    CardDefaults.cardColors(
+
+                        containerColor =
+                            Color(0xFF151515)
+                    ),
+
+                shape =
+                    RoundedCornerShape(20.dp)
+            ) {
+
+                Row(
+
+                    modifier =
+
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(18.dp),
+
+                    verticalAlignment =
+                        Alignment.CenterVertically
+                ) {
+
+
+                    TelegramLogo(
+                        size = 48.dp
+                    )
+
+
+                    Spacer(
+                        Modifier.size(15.dp)
+                    )
+
+
+                    Column(
+
+                        modifier =
+                            Modifier.weight(1f)
+                    ) {
+
+                        Text(
+
+                            text =
+                                "Message on Telegram",
+
+                            fontWeight =
+                                FontWeight.Bold
+                        )
+
+
+                        Spacer(
+                            Modifier.height(4.dp)
+                        )
+
+
+                        Text(
+
+                            text =
+                                "@SKY_XYR",
+
+                            color =
+                                Color(0xFF42A5F5)
+                        )
+                    }
+
 
                     Text(
 
                         text =
-                            "𝙓𝙔𝙍 ( 𝘽𝙊𝙏 𝘿𝙀𝙑 )",
+                            ">",
 
                         fontWeight =
                             FontWeight.Bold
-                    )
-
-
-                    Spacer(
-                        Modifier.height(5.dp)
-                    )
-
-
-                    Text(
-
-                        text =
-                            "Telefarm Owner",
-
-                        color =
-                            Color(0xFFBDBDBD)
-                    )
-
-
-                    Spacer(
-                        Modifier.height(4.dp)
-                    )
-
-
-                    Text(
-
-                        text =
-                            "Tap to view details",
-
-                        color =
-                            Color(0xFF888888)
                     )
                 }
             }
@@ -484,7 +1014,134 @@ fun HomeScreen(
 }
 
 
-/* ---------------- PROJECTS SCREEN ---------------- */
+/* =========================================================
+   OWNER INFO
+   ========================================================= */
+
+@Composable
+fun OwnerInfoRow(
+
+    title: String,
+
+    value: String
+
+) {
+
+    Row(
+
+        verticalAlignment =
+            Alignment.CenterVertically
+    ) {
+
+
+        Box(
+
+            modifier =
+
+                Modifier
+                    .size(42.dp)
+                    .clip(CircleShape)
+                    .background(
+                        Color(0xFF242424)
+                    ),
+
+            contentAlignment =
+                Alignment.Center
+        ) {
+
+            Text(
+
+                text =
+                    title.take(1),
+
+                fontWeight =
+                    FontWeight.Bold
+            )
+        }
+
+
+        Spacer(
+            Modifier.size(14.dp)
+        )
+
+
+        Column {
+
+            Text(
+
+                text =
+                    title,
+
+                fontWeight =
+                    FontWeight.SemiBold
+            )
+
+
+            Spacer(
+                Modifier.height(3.dp)
+            )
+
+
+            Text(
+
+                text =
+                    value,
+
+                color =
+                    Color(0xFFBDBDBD)
+            )
+        }
+    }
+}
+
+
+/* =========================================================
+   OPEN TELEGRAM
+   ========================================================= */
+
+fun openTelegram(
+    context: Context
+) {
+
+    val telegramApp =
+        Intent(
+
+            Intent.ACTION_VIEW,
+
+            Uri.parse(
+                "tg://resolve?domain=SKY_XYR"
+            )
+        )
+
+
+    try {
+
+        context.startActivity(
+            telegramApp
+        )
+
+    } catch (e: Exception) {
+
+        val browser =
+            Intent(
+
+                Intent.ACTION_VIEW,
+
+                Uri.parse(
+                    "https://t.me/SKY_XYR"
+                )
+            )
+
+        context.startActivity(
+            browser
+        )
+    }
+}
+
+
+/* =========================================================
+   PROJECTS SCREEN
+   ========================================================= */
 
 @Composable
 fun ProjectsScreen(
@@ -515,16 +1172,19 @@ fun ProjectsScreen(
     ) {
 
 
-        OutlinedButton(
+        SlideInItem(0) {
 
-            onClick =
-                onBack
-        ) {
+            OutlinedButton(
 
-            Text(
-                text =
-                    "Back"
-            )
+                onClick =
+                    onBack
+            ) {
+
+                Text(
+                    text =
+                        "Back"
+                )
+            }
         }
 
 
@@ -533,67 +1193,72 @@ fun ProjectsScreen(
         )
 
 
-        Row(
+        SlideInItem(100) {
 
-            modifier =
-                Modifier.fillMaxWidth(),
+            Row(
 
-            horizontalArrangement =
-                Arrangement.SpaceBetween,
+                modifier =
+                    Modifier.fillMaxWidth(),
 
-            verticalAlignment =
-                Alignment.CenterVertically
-        ) {
+                horizontalArrangement =
+                    Arrangement.SpaceBetween,
 
-
-            Column {
-
-                Text(
-
-                    text =
-                        "Projects",
-
-                    style =
-                        MaterialTheme.typography.headlineSmall,
-
-                    fontWeight =
-                        FontWeight.Bold
-                )
-
-
-                Spacer(
-                    Modifier.height(4.dp)
-                )
-
-
-                Text(
-
-                    text =
-                        "Maximum 5 bots per project",
-
-                    color =
-                        Color(0xFFBDBDBD)
-                )
-            }
-
-
-            Button(
-
-                onClick = {
-
-                    if (projects.size < 5) {
-
-                        projects =
-                            projects +
-                                "Project ${projects.size + 1}"
-                    }
-                }
+                verticalAlignment =
+                    Alignment.CenterVertically
             ) {
 
-                Text(
-                    text =
-                        "New Project"
-                )
+
+                Column {
+
+                    Text(
+
+                        text =
+                            "Projects",
+
+                        style =
+                            MaterialTheme.typography.headlineSmall,
+
+                        fontWeight =
+                            FontWeight.Bold
+                    )
+
+
+                    Spacer(
+                        Modifier.height(4.dp)
+                    )
+
+
+                    Text(
+
+                        text =
+                            "Maximum 5 projects",
+
+                        color =
+                            Color(0xFFBDBDBD)
+                    )
+                }
+
+
+                Button(
+
+                    onClick = {
+
+                        if (
+                            projects.size < 5
+                        ) {
+
+                            projects =
+                                projects +
+                                "Project ${projects.size + 1}"
+                        }
+                    }
+                ) {
+
+                    Text(
+                        text =
+                            "New Project"
+                    )
+                }
             }
         }
 
@@ -612,217 +1277,79 @@ fun ProjectsScreen(
 
             items(projects) { project ->
 
-
-                Card(
-
-                    modifier =
-                        Modifier.fillMaxWidth(),
-
-                    colors =
-                        CardDefaults.cardColors(
-
-                            containerColor =
-                                Color(0xFF151515)
-                        ),
-
-                    shape =
-                        RoundedCornerShape(18.dp)
+                SlideInItem(
+                    delayMillis = 150
                 ) {
 
-
-                    Row(
+                    Card(
 
                         modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(18.dp),
+                            Modifier.fillMaxWidth(),
 
-                        horizontalArrangement =
-                            Arrangement.SpaceBetween,
+                        colors =
+                            CardDefaults.cardColors(
 
-                        verticalAlignment =
-                            Alignment.CenterVertically
+                                containerColor =
+                                    Color(0xFF151515)
+                            ),
+
+                        shape =
+                            RoundedCornerShape(18.dp)
                     ) {
 
+                        Row(
 
-                        Column {
+                            modifier =
+
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(18.dp),
+
+                            horizontalArrangement =
+                                Arrangement.SpaceBetween,
+
+                            verticalAlignment =
+                                Alignment.CenterVertically
+                        ) {
+
+
+                            Column {
+
+                                Text(
+
+                                    text =
+                                        project,
+
+                                    fontWeight =
+                                        FontWeight.SemiBold
+                                )
+
+
+                                Spacer(
+                                    Modifier.height(4.dp)
+                                )
+
+
+                                Text(
+
+                                    text =
+                                        "0 / 5 bots",
+
+                                    color =
+                                        Color(0xFFBDBDBD)
+                                )
+                            }
+
 
                             Text(
 
                                 text =
-                                    project,
-
-                                fontWeight =
-                                    FontWeight.SemiBold
-                            )
-
-
-                            Spacer(
-                                Modifier.height(4.dp)
-                            )
-
-
-                            Text(
-
-                                text =
-                                    "0 / 5 bots",
-
-                                color =
-                                    Color(0xFFBDBDBD)
+                                    "Open"
                             )
                         }
-
-
-                        Text(
-                            text =
-                                "Open"
-                        )
                     }
                 }
             }
-        }
-    }
-}
-
-
-/* ---------------- OWNER SCREEN ---------------- */
-
-@Composable
-fun OwnerScreen(
-
-    modifier: Modifier,
-
-    onBack: () -> Unit
-
-) {
-
-    /*
-     * IMPORTANT:
-     * startActivity() directly is not available inside
-     * a Composable.
-     *
-     * LocalContext gives us the current Android context.
-     */
-
-    val context =
-        LocalContext.current
-
-
-    Column(
-
-        modifier =
-            modifier
-                .fillMaxSize()
-                .background(Color.Black)
-                .padding(20.dp)
-    ) {
-
-
-        OutlinedButton(
-
-            onClick =
-                onBack
-        ) {
-
-            Text(
-                text =
-                    "Back"
-            )
-        }
-
-
-        Spacer(
-            Modifier.height(35.dp)
-        )
-
-
-        /* PROFILE IMAGE */
-
-        Image(
-
-            painter =
-                painterResource(
-                    id =
-                        R.drawable.profile
-                ),
-
-            contentDescription =
-                "Owner profile",
-
-            modifier =
-                Modifier
-                    .size(120.dp)
-                    .clip(CircleShape)
-        )
-
-
-        Spacer(
-            Modifier.height(20.dp)
-        )
-
-
-        /* OWNER NAME */
-
-        Text(
-
-            text =
-                "𝙓𝙔𝙍 ( 𝘽𝙊𝙏 𝘿𝙀𝙑 )",
-
-            style =
-                MaterialTheme.typography.headlineSmall,
-
-            fontWeight =
-                FontWeight.Bold
-        )
-
-
-        Spacer(
-            Modifier.height(6.dp)
-        )
-
-
-        Text(
-
-            text =
-                "Telefarm Owner",
-
-            color =
-                Color(0xFFBDBDBD)
-        )
-
-
-        Spacer(
-            Modifier.height(30.dp)
-        )
-
-
-        /* TELEGRAM BUTTON */
-
-        Button(
-
-            onClick = {
-
-                val intent =
-                    Intent(
-
-                        Intent.ACTION_VIEW,
-
-                        Uri.parse(
-                            "https://t.me/SKY_XYR"
-                        )
-                    )
-
-                context.startActivity(intent)
-            },
-
-            modifier =
-                Modifier.fillMaxWidth()
-        ) {
-
-            Text(
-                text =
-                    "Contact Owner"
-            )
         }
     }
 }
