@@ -543,7 +543,7 @@ fun TelegramLogo(
 
         modifier =
             Modifier
-                .size(logosize)
+                .size(logoSize)
                 .clip(CircleShape)
                 .background(
                     Color(0xFF229ED9)
@@ -557,7 +557,7 @@ fun TelegramLogo(
 
             modifier =
                 Modifier
-                    .size(logosize * 0.58f)
+                    .size(logoSize * 0.58f)
         ) {
 
             val path =
@@ -791,7 +791,7 @@ fun OwnerScreen(
                     ) {
 
                         TelegramLogo(
-                            logosize = 62.dp
+                            logoSize = 62.dp
                         )
 
 
@@ -918,7 +918,7 @@ fun OwnerScreen(
                 ) {
 
                     TelegramLogo(
-                        logosize = 48.dp
+                        logoSize = 48.dp
                     )
 
 
