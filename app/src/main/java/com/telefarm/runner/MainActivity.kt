@@ -27,7 +27,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.weight
 
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -532,7 +531,7 @@ fun HomeScreen(
 
 
 /* =========================================================
-   TELEGRAM LOGO - FIXED
+   TELEGRAM LOGO
    ========================================================= */
 
 @Composable
@@ -565,28 +564,28 @@ fun TelegramLogo(
                 Path().apply {
 
                     moveTo(
-                        this.size.width * 0.05f,
-                        this.size.height * 0.45f
+                        size.width * 0.05f,
+                        size.height * 0.45f
                     )
 
                     lineTo(
-                        this.size.width * 0.90f,
-                        this.size.height * 0.08f
+                        size.width * 0.90f,
+                        size.height * 0.08f
                     )
 
                     lineTo(
-                        this.size.width * 0.70f,
-                        this.size.height * 0.88f
+                        size.width * 0.70f,
+                        size.height * 0.88f
                     )
 
                     lineTo(
-                        this.size.width * 0.47f,
-                        this.size.height * 0.60f
+                        size.width * 0.47f,
+                        size.height * 0.60f
                     )
 
                     lineTo(
-                        this.size.width * 0.05f,
-                        this.size.height * 0.45f
+                        size.width * 0.05f,
+                        size.height * 0.45f
                     )
 
                     close()
@@ -601,36 +600,38 @@ fun TelegramLogo(
             )
 
 
-                        val inner =
+            val inner =
                 Path().apply {
 
                     moveTo(
-                        x = this.size.width * 0.47f,
-                        y = this.size.height * 0.60f
+                        size.width * 0.47f,
+                        size.height * 0.60f
                     )
 
                     lineTo(
-                        x = this.size.width * 0.85f,
-                        y = this.size.height * 0.16f
+                        size.width * 0.85f,
+                        size.height * 0.16f
                     )
 
                     lineTo(
-                        x = this.size.width * 0.53f,
-                        y = this.size.height * 0.48f
+                        size.width * 0.53f,
+                        size.height * 0.48f
                     )
 
                     close()
                 }
 
+
             drawPath(
+
                 path = inner,
-                color = Color(0xFF229ED9)
+
+                color =
+                    Color(0xFF229ED9)
             )
         }
     }
 }
-
-
 /* =========================================================
    OWNER SCREEN
    ========================================================= */
@@ -657,7 +658,6 @@ fun OwnerScreen(
             OutlinedButton(
                 onClick = onBack
             ) {
-
                 Text(
                     text = "Back"
                 )
@@ -1081,8 +1081,6 @@ fun openTelegram(
         )
     }
 }
-
-
 /* =========================================================
    PROJECTS SCREEN
    ========================================================= */
@@ -1104,6 +1102,7 @@ fun ProjectsScreen(
 
 
     Column(
+
         modifier =
             modifier
                 .fillMaxSize()
@@ -1111,9 +1110,13 @@ fun ProjectsScreen(
                 .padding(20.dp)
     ) {
 
+
+        /* BACK BUTTON */
+
         SlideInItem(0) {
 
             OutlinedButton(
+
                 onClick =
                     onBack
             ) {
@@ -1131,9 +1134,12 @@ fun ProjectsScreen(
         )
 
 
+        /* PROJECT HEADER */
+
         SlideInItem(100) {
 
             Row(
+
                 modifier =
                     Modifier.fillMaxWidth(),
 
@@ -1144,9 +1150,11 @@ fun ProjectsScreen(
                     Alignment.CenterVertically
             ) {
 
+
                 Column {
 
                     Text(
+
                         text =
                             "Projects",
 
@@ -1164,6 +1172,7 @@ fun ProjectsScreen(
 
 
                     Text(
+
                         text =
                             "Maximum 5 projects",
 
@@ -1174,6 +1183,7 @@ fun ProjectsScreen(
 
 
                 Button(
+
                     onClick = {
 
                         if (
@@ -1201,7 +1211,10 @@ fun ProjectsScreen(
         )
 
 
+        /* PROJECT LIST */
+
         LazyColumn(
+
             modifier =
                 Modifier.fillMaxSize(),
 
@@ -1209,23 +1222,34 @@ fun ProjectsScreen(
                 Arrangement.spacedBy(10.dp)
         ) {
 
+
             items(
-                items = projects,
-                key = { project ->
+
+                items =
+                    projects,
+
+                key = {
+                    project ->
                     project
                 }
+
             ) { project ->
 
+
                 SlideInItem(
-                    delayMillis = 150
+
+                    delayMillis =
+                        150
                 ) {
 
                     Card(
+
                         modifier =
                             Modifier.fillMaxWidth(),
 
                         colors =
                             CardDefaults.cardColors(
+
                                 containerColor =
                                     Color(0xFF151515)
                             ),
@@ -1234,8 +1258,11 @@ fun ProjectsScreen(
                             RoundedCornerShape(18.dp)
                     ) {
 
+
                         Row(
+
                             modifier =
+
                                 Modifier
                                     .fillMaxWidth()
                                     .padding(18.dp),
@@ -1247,9 +1274,11 @@ fun ProjectsScreen(
                                 Alignment.CenterVertically
                         ) {
 
+
                             Column {
 
                                 Text(
+
                                     text =
                                         project,
 
@@ -1264,6 +1293,7 @@ fun ProjectsScreen(
 
 
                                 Text(
+
                                     text =
                                         "0 / 5 bots",
 
@@ -1274,8 +1304,12 @@ fun ProjectsScreen(
 
 
                             Text(
+
                                 text =
-                                    "Open"
+                                    "Open",
+
+                                fontWeight =
+                                    FontWeight.SemiBold
                             )
                         }
                     }
@@ -1284,5 +1318,3 @@ fun ProjectsScreen(
         }
     }
 }
-
-                 
