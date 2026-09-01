@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.weight
+
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 
@@ -141,9 +142,7 @@ fun TelefarmApp() {
                 title = {
 
                     Text(
-
                         text = "Telefarm",
-
                         fontWeight = FontWeight.Bold
                     )
                 },
@@ -170,12 +169,10 @@ fun TelefarmApp() {
                         Modifier.padding(padding),
 
                     onProjects = {
-
                         screen = "projects"
                     },
 
                     onOwner = {
-
                         screen = "owner"
                     }
                 )
@@ -189,7 +186,6 @@ fun TelefarmApp() {
                         Modifier.padding(padding),
 
                     onBack = {
-
                         screen = "home"
                     }
                 )
@@ -203,7 +199,6 @@ fun TelefarmApp() {
                         Modifier.padding(padding),
 
                     onBack = {
-
                         screen = "home"
                     }
                 )
@@ -537,7 +532,7 @@ fun HomeScreen(
 
 
 /* =========================================================
-   TELEGRAM LOGO
+   TELEGRAM LOGO - FIXED
    ========================================================= */
 
 @Composable
@@ -570,28 +565,28 @@ fun TelegramLogo(
                 Path().apply {
 
                     moveTo(
-                        size.width * 0.05f,
-                        size.height * 0.45f
+                        this.size.width * 0.05f,
+                        this.size.height * 0.45f
                     )
 
                     lineTo(
-                        size.width * 0.90f,
-                        size.height * 0.08f
+                        this.size.width * 0.90f,
+                        this.size.height * 0.08f
                     )
 
                     lineTo(
-                        size.width * 0.70f,
-                        size.height * 0.88f
+                        this.size.width * 0.70f,
+                        this.size.height * 0.88f
                     )
 
                     lineTo(
-                        size.width * 0.47f,
-                        size.height * 0.60f
+                        this.size.width * 0.47f,
+                        this.size.height * 0.60f
                     )
 
                     lineTo(
-                        size.width * 0.05f,
-                        size.height * 0.45f
+                        this.size.width * 0.05f,
+                        this.size.height * 0.45f
                     )
 
                     close()
@@ -610,18 +605,18 @@ fun TelegramLogo(
                 Path().apply {
 
                     moveTo(
-                        size.width * 0.47f,
-                        size.height * 0.60f
+                        this.size.width * 0.47f,
+                        this.size.height * 0.60f
                     )
 
                     lineTo(
-                        size.width * 0.85f,
-                        size.height * 0.16f
+                        this.size.width * 0.85f,
+                        this.size.height * 0.16f
                     )
 
                     lineTo(
-                        size.width * 0.53f,
-                        size.height * 0.48f
+                        this.size.width * 0.53f,
+                        this.size.height * 0.48f
                     )
 
                     close()
@@ -637,26 +632,20 @@ fun TelegramLogo(
             )
         }
     }
-}
-/* =========================================================
+    /* =========================================================
    OWNER SCREEN
    ========================================================= */
 
 @Composable
 fun OwnerScreen(
-
     modifier: Modifier,
-
     onBack: () -> Unit
-
 ) {
 
     val context =
         androidx.compose.ui.platform.LocalContext.current
 
-
     Column(
-
         modifier =
             modifier
                 .fillMaxSize()
@@ -664,18 +653,14 @@ fun OwnerScreen(
                 .padding(20.dp)
     ) {
 
-
         SlideInItem(0) {
 
             OutlinedButton(
-
-                onClick =
-                    onBack
+                onClick = onBack
             ) {
 
                 Text(
-                    text =
-                        "Back"
+                    text = "Back"
                 )
             }
         }
@@ -691,7 +676,6 @@ fun OwnerScreen(
         SlideInItem(100) {
 
             Box(
-
                 modifier =
                     Modifier.fillMaxWidth(),
 
@@ -700,11 +684,9 @@ fun OwnerScreen(
             ) {
 
                 Image(
-
                     painter =
                         painterResource(
-                            id =
-                                R.drawable.profile
+                            id = R.drawable.profile
                         ),
 
                     contentDescription =
@@ -729,7 +711,6 @@ fun OwnerScreen(
         SlideInItem(200) {
 
             Box(
-
                 modifier =
                     Modifier.fillMaxWidth(),
 
@@ -738,7 +719,6 @@ fun OwnerScreen(
             ) {
 
                 Text(
-
                     text =
                         "𝙓𝙔𝙍 ( 𝘽𝙊𝙏 𝘿𝙀𝙑 )",
 
@@ -760,7 +740,6 @@ fun OwnerScreen(
         SlideInItem(250) {
 
             Box(
-
                 modifier =
                     Modifier.fillMaxWidth(),
 
@@ -769,7 +748,6 @@ fun OwnerScreen(
             ) {
 
                 Text(
-
                     text =
                         "Telefarm Owner",
 
@@ -790,13 +768,11 @@ fun OwnerScreen(
         SlideInItem(350) {
 
             Card(
-
                 modifier =
                     Modifier.fillMaxWidth(),
 
                 colors =
                     CardDefaults.cardColors(
-
                         containerColor =
                             Color(0xFF151515)
                     ),
@@ -806,18 +782,14 @@ fun OwnerScreen(
             ) {
 
                 Column(
-
                     modifier =
                         Modifier.padding(18.dp)
                 ) {
 
-
                     Row(
-
                         verticalAlignment =
                             Alignment.CenterVertically
                     ) {
-
 
                         TelegramLogo(
                             size = 62.dp
@@ -830,13 +802,11 @@ fun OwnerScreen(
 
 
                         Column(
-
                             modifier =
                                 Modifier.weight(1f)
                         ) {
 
                             Text(
-
                                 text =
                                     "Connect on Telegram",
 
@@ -851,7 +821,6 @@ fun OwnerScreen(
 
 
                             Text(
-
                                 text =
                                     "Contact the Telefarm owner",
 
@@ -862,7 +831,6 @@ fun OwnerScreen(
 
 
                         Button(
-
                             onClick = {
 
                                 openTelegram(
@@ -885,7 +853,6 @@ fun OwnerScreen(
 
 
                     OwnerInfoRow(
-
                         title =
                             "Developer",
 
@@ -900,7 +867,6 @@ fun OwnerScreen(
 
 
                     OwnerInfoRow(
-
                         title =
                             "Specialization",
 
@@ -922,9 +888,7 @@ fun OwnerScreen(
         SlideInItem(450) {
 
             Card(
-
                 modifier =
-
                     Modifier
                         .fillMaxWidth()
                         .clickable {
@@ -935,9 +899,7 @@ fun OwnerScreen(
                         },
 
                 colors =
-
                     CardDefaults.cardColors(
-
                         containerColor =
                             Color(0xFF151515)
                     ),
@@ -947,9 +909,7 @@ fun OwnerScreen(
             ) {
 
                 Row(
-
                     modifier =
-
                         Modifier
                             .fillMaxWidth()
                             .padding(18.dp),
@@ -957,7 +917,6 @@ fun OwnerScreen(
                     verticalAlignment =
                         Alignment.CenterVertically
                 ) {
-
 
                     TelegramLogo(
                         size = 48.dp
@@ -970,13 +929,11 @@ fun OwnerScreen(
 
 
                     Column(
-
                         modifier =
                             Modifier.weight(1f)
                     ) {
 
                         Text(
-
                             text =
                                 "Message on Telegram",
 
@@ -991,7 +948,6 @@ fun OwnerScreen(
 
 
                         Text(
-
                             text =
                                 "@SKY_XYR",
 
@@ -1002,7 +958,6 @@ fun OwnerScreen(
 
 
                     Text(
-
                         text =
                             ">",
 
@@ -1022,24 +977,17 @@ fun OwnerScreen(
 
 @Composable
 fun OwnerInfoRow(
-
     title: String,
-
     value: String
-
 ) {
 
     Row(
-
         verticalAlignment =
             Alignment.CenterVertically
     ) {
 
-
         Box(
-
             modifier =
-
                 Modifier
                     .size(42.dp)
                     .clip(CircleShape)
@@ -1052,7 +1000,6 @@ fun OwnerInfoRow(
         ) {
 
             Text(
-
                 text =
                     title.take(1),
 
@@ -1070,7 +1017,6 @@ fun OwnerInfoRow(
         Column {
 
             Text(
-
                 text =
                     title,
 
@@ -1085,7 +1031,6 @@ fun OwnerInfoRow(
 
 
             Text(
-
                 text =
                     value,
 
@@ -1107,7 +1052,6 @@ fun openTelegram(
 
     val telegramApp =
         Intent(
-
             Intent.ACTION_VIEW,
 
             Uri.parse(
@@ -1126,7 +1070,6 @@ fun openTelegram(
 
         val browser =
             Intent(
-
                 Intent.ACTION_VIEW,
 
                 Uri.parse(
@@ -1147,11 +1090,8 @@ fun openTelegram(
 
 @Composable
 fun ProjectsScreen(
-
     modifier: Modifier,
-
     onBack: () -> Unit
-
 ) {
 
     var projects by remember {
@@ -1165,7 +1105,6 @@ fun ProjectsScreen(
 
 
     Column(
-
         modifier =
             modifier
                 .fillMaxSize()
@@ -1173,11 +1112,9 @@ fun ProjectsScreen(
                 .padding(20.dp)
     ) {
 
-
         SlideInItem(0) {
 
             OutlinedButton(
-
                 onClick =
                     onBack
             ) {
@@ -1198,7 +1135,6 @@ fun ProjectsScreen(
         SlideInItem(100) {
 
             Row(
-
                 modifier =
                     Modifier.fillMaxWidth(),
 
@@ -1209,11 +1145,9 @@ fun ProjectsScreen(
                     Alignment.CenterVertically
             ) {
 
-
                 Column {
 
                     Text(
-
                         text =
                             "Projects",
 
@@ -1231,7 +1165,6 @@ fun ProjectsScreen(
 
 
                     Text(
-
                         text =
                             "Maximum 5 projects",
 
@@ -1242,7 +1175,6 @@ fun ProjectsScreen(
 
 
                 Button(
-
                     onClick = {
 
                         if (
@@ -1271,26 +1203,30 @@ fun ProjectsScreen(
 
 
         LazyColumn(
+            modifier =
+                Modifier.fillMaxSize(),
 
             verticalArrangement =
                 Arrangement.spacedBy(10.dp)
         ) {
 
-
-            items(projects) { project ->
+            items(
+                items = projects,
+                key = { project ->
+                    project
+                }
+            ) { project ->
 
                 SlideInItem(
                     delayMillis = 150
                 ) {
 
                     Card(
-
                         modifier =
                             Modifier.fillMaxWidth(),
 
                         colors =
                             CardDefaults.cardColors(
-
                                 containerColor =
                                     Color(0xFF151515)
                             ),
@@ -1300,9 +1236,7 @@ fun ProjectsScreen(
                     ) {
 
                         Row(
-
                             modifier =
-
                                 Modifier
                                     .fillMaxWidth()
                                     .padding(18.dp),
@@ -1314,11 +1248,9 @@ fun ProjectsScreen(
                                 Alignment.CenterVertically
                         ) {
 
-
                             Column {
 
                                 Text(
-
                                     text =
                                         project,
 
@@ -1333,7 +1265,6 @@ fun ProjectsScreen(
 
 
                                 Text(
-
                                     text =
                                         "0 / 5 bots",
 
@@ -1344,7 +1275,6 @@ fun ProjectsScreen(
 
 
                             Text(
-
                                 text =
                                     "Open"
                             )
@@ -1355,3 +1285,5 @@ fun ProjectsScreen(
         }
     }
 }
+
+                 
